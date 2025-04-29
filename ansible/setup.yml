@@ -1,0 +1,38 @@
+- name: Setup EC2 for Yii2 App
+  hosts: app-servers
+  become: yes
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Install NGINX
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Start Docker Swarm
+      shell: docker swarm init || true
+
+    - name: Copy NGINX config
+      copy:
+        src: ./docker/nginx.conf
+        dest: /etc/nginx/sites-available/yii2
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Enable NGINX config
+      file:
+        src: /etc/nginx/sites-available/yii2
+        dest: /etc/nginx/sites-enabled/yii2
+        state: link
+
+    - name: Restart NGINX
+      service:
+        name: nginx
+        state: restarted
+
