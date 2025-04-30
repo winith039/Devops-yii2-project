@@ -19,7 +19,7 @@
 
     - name: Copy NGINX config
       copy:
-        src: ./docker/nginx.conf
+        src: /home/ubuntu/Devops-yii2-project/docker/nginx.conf
         dest: /etc/nginx/sites-available/yii2
         owner: root
         group: root
